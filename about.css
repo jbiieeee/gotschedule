@@ -1,0 +1,59 @@
+/* About Page Specific Styles */
+.hero-gradient {
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-pill {
+    padding: 0.5rem 1.5rem;
+}
+
+.feature-card {
+    transition: var(--transition);
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.feature-card:hover {
+    border-color: var(--primary) !important;
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.06) !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.feature-card .icon-box {
+    transition: var(--transition);
+}
+
+.feature-card:hover .icon-box {
+    transform: scale(1.1) rotate(5deg);
+    background: var(--primary) !important;
+    color: white !important;
+}
+
+.cta-bg-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150%;
+    height: 150%;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.backdrop-blur {
+    backdrop-filter: blur(8px);
+}
+
+.tracking-wider {
+    letter-spacing: 0.1em;
+}
+
+.line-height-sm {
+    line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+    .display-3 { font-size: 2.5rem; }
+    .stat-pill { border-left: none !important; padding-left: 0 !important; }
+}

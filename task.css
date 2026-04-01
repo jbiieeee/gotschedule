@@ -1,0 +1,186 @@
+/* Dashboard & App Standard Layout - Light Theme */
+.dashboard-body {
+    display: flex;
+    min-height: 100vh;
+    background: var(--bg-darker);
+}
+
+.main-content {
+    flex-grow: 1;
+    margin-left: 280px; /* Aligned with sidebar width */
+    padding: 3rem 4rem;
+    max-width: 1600px; /* Wider standardized view */
+    width: calc(100% - 280px);
+    transition: var(--transition);
+}
+
+/* Task Cards Refinement - High Definition */
+.task-card {
+    background: #ffffff !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem 2rem !important;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary) !important;
+}
+
+.task-card.completed {
+    background: #f8fafc !important;
+    border-color: rgba(0, 0, 0, 0.05) !important;
+    opacity: 0.7;
+}
+
+.task-card h6 {
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
+}
+
+.task-card h3 {
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.task-card p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.status-badge {
+    padding: 0.4rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-pending { background: rgba(245, 158, 11, 0.1); color: #b45309; }
+.status-progress { background: rgba(79, 70, 229, 0.1); color: #4338ca; }
+.status-completed { background: rgba(16, 185, 129, 0.1); color: #065f46; }
+
+/* Dashboard Widgets */
+.stat-card {
+    padding: 2rem;
+    border-radius: var(--border-radius-xl);
+    background: linear-gradient(145deg, #ffffff, #f8fafc);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+/* Calendar Grid Aesthetics */
+.calendar-full {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1.5rem;
+}
+
+.day-box {
+    min-height: 140px;
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 1.5rem;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+}
+
+.day-box:hover {
+    border-color: var(--primary);
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-5px);
+}
+
+.day-num {
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.task-dot {
+    font-size: 0.7rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 0.75rem;
+    background: rgba(99, 102, 241, 0.15);
+    color: var(--primary);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.task-dot.completed {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--secondary);
+    border-color: rgba(16, 185, 129, 0.2);
+    text-decoration: line-through;
+}
+
+/* Dashboard Widgets */
+.stat-card {
+    padding: 2rem;
+    border-radius: var(--border-radius-xl);
+    background: linear-gradient(145deg, #ffffff, #f8fafc);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+/* UI Components */
+.btn-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+}
+
+.btn-icon:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.progress {
+    background: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Performance Optimized Animations */
+.reveal-animation {
+    animation: revealUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    will-change: transform, opacity;
+}
+
+@keyframes revealUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.hover-scale { transition: var(--transition); }
+.hover-scale:hover { transform: scale(1.1); }
+.scroll-shadow-container {
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+/* Mobile Overrides Sync */
+@media (max-width: 991px) {
+    .main-content { margin-left: 0; width: 100%; padding: 2rem 1.5rem; padding-top: 5rem; }
+}

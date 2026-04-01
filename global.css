@@ -1,0 +1,146 @@
+/* Global Design System - Light Dynamic Edition */
+:root {
+    /* Primary Style Tokens */
+    --primary: #4f46e5;
+    --primary-dark: #3730a3;
+    --secondary: #059669;
+    --accent: #e11d48;
+    
+    /* Backgrounds - Refined Light Glass */
+    --bg-darker: #f8fafc;
+    --bg-dark: #f1f5f9;
+    --surface: rgba(255, 255, 255, 0.95);
+    --border: rgba(30, 41, 59, 0.12);
+    
+    /* Elevation Tokens */
+    --glass-blur: blur(12px); /* Performance optimized from 20px */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --border-radius-lg: 1rem;
+    --border-radius-xl: 1.5rem;
+    
+    /* Typography */
+    --text-primary: #0f172a;
+    --text-muted: #475569;
+    --text-dim: #64748b;
+    --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-main);
+    background: var(--bg-darker);
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.03) 0px, transparent 50%);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Dynamic Containers */
+.glass-panel {
+    background: var(--surface);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--border);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: 2rem;
+    transition: var(--transition);
+}
+
+.glass-panel:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+/* Modern Input Handling */
+.form-control, .form-select {
+    background-color: #ffffff !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text-primary) !important;
+    padding: 0.75rem 1rem !important;
+    border-radius: 0.75rem !important;
+    transition: var(--transition) !important;
+}
+
+.form-control:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1) !important;
+}
+
+.form-label {
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+/* Dynamic Buttons */
+.btn-modern {
+    background: var(--primary);
+    color: white !important;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.btn-modern:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+}
+
+/* Navigation Spacing */
+.nav-link-modern {
+    color: var(--text-muted);
+    text-decoration: none !important;
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+.nav-link-modern:hover, .nav-link-modern.active {
+    color: var(--primary) !important;
+    background: rgba(79, 70, 229, 0.08);
+}
+
+/* Logo Design */
+.logo-font {
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    background: linear-gradient(135deg, var(--primary), #6366f1, #10b981);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.05));
+}
+
+/* Utils */
+.fs-7 { font-size: 0.875rem; }
+.fs-8 { font-size: 0.75rem; }
+.fs-9 { font-size: 0.65rem; }
+.hide-scroll::-webkit-scrollbar { display: none; }
+.reveal-animation { animation: revealIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+@keyframes revealIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
