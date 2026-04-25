@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const habitsContainer = document.getElementById('habits-container');
     async function loadHabits() {
         if (!habitsContainer) return;
-        const res = await fetch('habit_api.php?action=fetch');
+        const res = await fetch('api/habit_api.php?action=fetch');
         const habits = await res.json();
         
         habitsContainer.innerHTML = habits.map(habit => {
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('action', 'toggle_day');
         formData.append('id', id);
         formData.append('date', date);
-        await fetch('habit_api.php', { method: 'POST', body: formData });
+        await fetch('api/habit_api.php', { method: 'POST', body: formData });
         loadHabits();
     };
 
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData();
         formData.append('action', 'add');
         formData.append('name', name);
-        await fetch('habit_api.php', { method: 'POST', body: formData });
+        await fetch('api/habit_api.php', { method: 'POST', body: formData });
         loadHabits();
     };
 
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData();
         formData.append('action', 'delete');
         formData.append('id', id);
-        await fetch('habit_api.php', { method: 'POST', body: formData });
+        await fetch('api/habit_api.php', { method: 'POST', body: formData });
         loadHabits();
     };
 
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (dumpArea) {
         // Initial Fetch
-        fetch('brain_dump_api.php?fetch=1').then(r => r.text()).then(text => dumpArea.value = text);
+        fetch('api/brain_dump_api.php?fetch=1').then(r => r.text()).then(text => dumpArea.value = text);
 
         dumpArea.addEventListener('input', () => {
             dumpStatus.innerText = 'Saving...';
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const formData = new FormData();
                 formData.append('save', '1');
                 formData.append('content', dumpArea.value);
-                fetch('brain_dump_api.php', { method: 'POST', body: formData })
+                fetch('api/brain_dump_api.php', { method: 'POST', body: formData })
                 .then(() => dumpStatus.innerText = 'Auto-saved');
             }, 1000);
         });
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const notesContainer = document.getElementById('sticky-notes-container');
     async function loadNotes() {
         if (!notesContainer) return;
-        const res = await fetch('notes_api.php?action=fetch');
+        const res = await fetch('api/notes_api.php?action=fetch');
         const notes = await res.json();
         
         notesContainer.innerHTML = notes.map(note => `
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData();
         formData.append('action', action);
         formData.append('id', id);
-        await fetch('notes_api.php', { method: 'POST', body: formData });
+        await fetch('api/notes_api.php', { method: 'POST', body: formData });
         loadNotes();
     };
 
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData();
         formData.append('action', 'share');
         formData.append('id', id);
-        const res = await fetch('notes_api.php', { method: 'POST', body: formData });
+        const res = await fetch('api/notes_api.php', { method: 'POST', body: formData });
         const data = await res.json();
         if (data.status === 'success') {
             prompt("Collab Key Generated! Share this with your teammate:", data.collab_key);
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (id) formData.append('id', id);
         if (title !== null) formData.append('title', title);
         if (content !== null) formData.append('content', content);
-        await fetch('notes_api.php', { method: 'POST', body: formData });
+        await fetch('api/notes_api.php', { method: 'POST', body: formData });
     };
 
     window.deleteNote = async (id) => {
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData();
         formData.append('action', 'delete');
         formData.append('id', id);
-        await fetch('notes_api.php', { method: 'POST', body: formData });
+        await fetch('api/notes_api.php', { method: 'POST', body: formData });
         loadNotes();
     };
 

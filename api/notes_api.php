@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once '../includes/config.php';
 
 if (!isset($_SESSION['user_id'])) {
     exit(json_encode(['status' => 'error', 'message' => 'Unauthorized']));

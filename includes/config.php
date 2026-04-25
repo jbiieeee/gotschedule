@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Environment Detection & Database configuration
-if ($_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' || $_SERVER['REMOTE_ADDR'] == '::1') {
+if (isset($_SERVER['HTTP_HOST']) && ($_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' || $_SERVER['REMOTE_ADDR'] == '::1')) {
     // LOCALHOST (XAMPP)
     define('DB_SERVER', 'localhost');
     define('DB_USERNAME', 'root');
@@ -20,7 +20,7 @@ if ($_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['REMOTE_ADDR'] == '127.0.0.
 
 // Attempt to connect to MySQL database
 try {
-    mysqli_report(MYSQLI_REPORT_OFF); // Disable fatal exceptions to use our custom error box
+    mysqli_report(MYSQLI_REPORT_OFF);
     $conn = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
     
     if (!$conn) {
@@ -45,17 +45,16 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 /**
- * Log a user action to the audit_logs table
+ * Log user activity for audit purposes
  */
-function logActivity($conn, $user_id, $action, $details = null) {
+function logActivity($conn, $user_id, $action, $details = "") {
     $stmt = $conn->prepare("INSERT INTO audit_logs (user_id, action, details) VALUES (?, ?, ?)");
     $stmt->bind_param("iss", $user_id, $action, $details);
-    $stmt->execute();
-    $stmt->close();
+    return $stmt->execute();
 }
 
 /**
- * Strict authentication check
+ * Authentication Check Helper
  */
 function checkAuth() {
     if (!isset($_SESSION['user_id'])) {

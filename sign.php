@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once 'includes/config.php';
 
 $message = '';
 $messageType = '';
@@ -72,8 +72,8 @@ if (isset($_POST['register'])) {
     <title>Create Account | GotSchedule</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="global.css">
-    <link rel="stylesheet" href="sign.css">
+    <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/sign.css">
 </head>
 <body class="d-flex flex-column min-vh-100">
 
@@ -216,8 +216,8 @@ if (isset($_POST['register'])) {
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="notifications.js"></script>
-    <script src="sign.js"></script>
+    <script src="assets/js/notifications.js"></script>
+    <script src="assets/js/sign.js"></script>
 </body>
 </html>
 

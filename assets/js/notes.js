@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('ajax', '1');
 
             try {
-                const response = await fetch('notes_action.php', {
+                const response = await fetch('api/notes_action.php', {
                     method: 'POST',
                     body: formData,
                     headers: { 'X-Requested-With': 'XMLHttpRequest' }
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const modalId = form.closest('.modal').id;
 
             try {
-                const response = await fetch('notes_action.php', {
+                const response = await fetch('api/notes_action.php', {
                     method: 'POST',
                     body: formData,
                     headers: { 'X-Requested-With': 'XMLHttpRequest' }

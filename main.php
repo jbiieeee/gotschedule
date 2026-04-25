@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once 'includes/config.php';
 
 $is_ajax = isset($_POST['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest');
 
@@ -54,8 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="global.css">
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body class="landing-body">
 
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
                     </div>
                     <div class="col-lg-6 reveal-animation" style="animation-delay: 0.2s;">
                         <div class="hero-image-wrapper p-2 bg-white rounded-5 shadow-2xl border border-dark border-opacity-10">
-                            <img src="hero_dashboard.png" alt="GotSchedule Dashboard Preview" class="img-fluid rounded-4 shadow-sm w-100 transition-all hover-scale">
+                            <img src="assets/img/hero_dashboard.png" alt="GotSchedule Dashboard Preview" class="img-fluid rounded-4 shadow-sm w-100 transition-all hover-scale">
                         </div>
                     </div>
                 </div>
@@ -218,8 +218,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="notifications.js"></script>
-    <script src="main.js"></script>
+    <script src="assets/js/notifications.js"></script>
+    <script src="assets/js/main.js"></script>
 </body>
 </html>
 
