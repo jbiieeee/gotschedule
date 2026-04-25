@@ -53,4 +53,4 @@ GotSchedule is a professional-grade, multi-dimensional productivity platform bui
 4. Access via `http://localhost/gotschedule/main.php`.
 
 ---
-© 2026 GotSchedule Engineering.
+Final Project WebSys1
