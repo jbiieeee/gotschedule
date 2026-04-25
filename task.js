@@ -1,162 +1,196 @@
-// Task Manager & Dashboard Logic with AJAX
 document.addEventListener('DOMContentLoaded', () => {
-    // Mini Calendar Logic
-    const calendarWidget = document.getElementById('calendar-widget');
-    const today = new Date();
-    
-    function renderMiniCalendar(date) {
-        const month = date.getMonth();
-        const year = date.getFullYear();
-        const firstDay = new Date(year, month, 1).getDay();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
+    // Shared Notifier
+    const notifier = window.notifier;
+
+    // 1. Search & Filter logic (existing)
+    const searchInput = document.getElementById('task-search');
+    const taskItems = document.querySelectorAll('.task-item');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            taskItems.forEach(item => {
+                const name = item.getAttribute('data-name');
+                item.style.display = name.includes(query) ? 'flex' : 'none';
+            });
+        });
+    }
+
+    // 2. Habit Tracker Logic
+    const habitsContainer = document.getElementById('habits-container');
+    async function loadHabits() {
+        if (!habitsContainer) return;
+        const res = await fetch('habit_api.php?action=fetch');
+        const habits = await res.json();
         
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        
-        let html = `
-            <div class="calendar-header d-flex justify-content-between align-items-center mb-3">
-                <span class="fw-bold text-primary">${monthNames[month]} ${year}</span>
-            </div>
-            <div class="calendar-grid">
-                <div class="grid-row d-flex text-muted fs-8 mb-2">
-                    <div class="flex-fill text-center">S</div>
-                    <div class="flex-fill text-center">M</div>
-                    <div class="flex-fill text-center">T</div>
-                    <div class="flex-fill text-center">W</div>
-                    <div class="flex-fill text-center">T</div>
-                    <div class="flex-fill text-center">F</div>
-                    <div class="flex-fill text-center">S</div>
-                </div>
-                <div class="grid-days d-flex flex-wrap">
-        `;
-        
-        for (let i = 0; i < firstDay; i++) {
-            html += `<div class="day-cell flex-fill text-center p-1 opacity-0" style="width: 14.28%"></div>`;
-        }
-        
-        for (let day = 1; day <= daysInMonth; day++) {
-            const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
-            html += `
-                <div class="day-cell flex-fill text-center p-1 fs-7 ${isToday ? 'bg-primary text-white rounded-circle shadow-sm' : 'text-muted'}" style="width: 14.28%; cursor: pointer;">
-                    ${day}
+        habitsContainer.innerHTML = habits.map(habit => {
+            const daysArr = Array.from({length: 31}, (_, i) => i + 1);
+            const todayStr = new Date().toISOString().split('T')[0];
+            const monthPrefix = todayStr.substring(0, 8); // YYYY-MM-
+            
+            return `
+                <div class="habit-item mb-4 animate__animated animate__fadeIn">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fs-8 fw-bold text-success-emphasis">${habit.habit_name}</span>
+                        <i class="bi bi-trash fs-9 text-muted cursor-pointer" onclick="deleteHabit(${habit.id})"></i>
+                    </div>
+                    <div class="habit-grid">
+                        ${daysArr.map(day => {
+                            const dateStr = monthPrefix + day.toString().padStart(2, '0');
+                            const isCompleted = habit.history.includes(dateStr);
+                            return `<div class="habit-day ${isCompleted ? 'completed' : ''}" 
+                                        title="${dateStr}" 
+                                        onclick="toggleHabitDay(${habit.id}, '${dateStr}')"></div>`;
+                        }).join('')}
+                    </div>
                 </div>
             `;
-        }
+        }).join('');
+        if (!habits.length) habitsContainer.innerHTML = '<div class="text-center py-3 opacity-30 fs-9">No habits tracked yet.</div>';
+    }
+
+    window.toggleHabitDay = async (id, date) => {
+        const formData = new FormData();
+        formData.append('action', 'toggle_day');
+        formData.append('id', id);
+        formData.append('date', date);
+        await fetch('habit_api.php', { method: 'POST', body: formData });
+        loadHabits();
+    };
+
+    window.addHabitPrompt = async () => {
+        const name = prompt("What habit do you want to track?");
+        if (!name) return;
+        const formData = new FormData();
+        formData.append('action', 'add');
+        formData.append('name', name);
+        await fetch('habit_api.php', { method: 'POST', body: formData });
+        loadHabits();
+    };
+
+    window.deleteHabit = async (id) => {
+        if (!confirm("Delete this habit?")) return;
+        const formData = new FormData();
+        formData.append('action', 'delete');
+        formData.append('id', id);
+        await fetch('habit_api.php', { method: 'POST', body: formData });
+        loadHabits();
+    };
+
+    loadHabits();
+
+    // 3. Brain Dump Logic
+    const dumpArea = document.getElementById('brain-dump-area');
+    const dumpStatus = document.getElementById('dump-status');
+    let dumpTimeout;
+
+    if (dumpArea) {
+        // Initial Fetch
+        fetch('brain_dump_api.php?fetch=1').then(r => r.text()).then(text => dumpArea.value = text);
+
+        dumpArea.addEventListener('input', () => {
+            dumpStatus.innerText = 'Saving...';
+            clearTimeout(dumpTimeout);
+            dumpTimeout = setTimeout(() => {
+                const formData = new FormData();
+                formData.append('save', '1');
+                formData.append('content', dumpArea.value);
+                fetch('brain_dump_api.php', { method: 'POST', body: formData })
+                .then(() => dumpStatus.innerText = 'Auto-saved');
+            }, 1000);
+        });
+    }
+
+    // 4. Enhanced Notes Logic (Pinned, Checklist)
+    const notesContainer = document.getElementById('sticky-notes-container');
+    async function loadNotes() {
+        if (!notesContainer) return;
+        const res = await fetch('notes_api.php?action=fetch');
+        const notes = await res.json();
         
-        html += `</div></div>`;
-        if (calendarWidget) calendarWidget.innerHTML = html;
+        notesContainer.innerHTML = notes.map(note => `
+            <div class="note-item p-3 rounded-3 bg-white mb-2 shadow-sm border ${note.is_pinned ? 'border-primary border-opacity-30' : 'border-warning border-opacity-20'} animate__animated animate__fadeIn">
+                <div class="d-flex justify-content-between mb-1">
+                    <div class="d-flex align-items-center gap-2 flex-grow-1">
+                        <i class="bi bi-pin-fill cursor-pointer ${note.is_pinned ? 'text-primary' : 'text-muted opacity-30'} fs-9" onclick="toggleNoteFeature(${note.id}, 'toggle_pin')"></i>
+                        <input type="text" class="fw-bold fs-8 border-0 bg-transparent text-dark w-100" value="${note.title}" onblur="saveNote(${note.id}, this.value, null)">
+                    </div>
+                    <div class="d-flex gap-2">
+                        <i class="bi bi-list-check cursor-pointer ${note.is_checklist ? 'text-success' : 'text-muted'} fs-9" title="Checklist Mode" onclick="toggleNoteFeature(${note.id}, 'toggle_checklist')"></i>
+                        <i class="bi bi-share cursor-pointer text-muted fs-9" title="Share" onclick="shareNote(${note.id})"></i>
+                        <i class="bi bi-trash fs-9 text-muted cursor-pointer" onclick="deleteNote(${note.id})"></i>
+                    </div>
+                </div>
+                <textarea class="fs-8 text-muted border-0 bg-transparent w-100 hide-scroll" style="height: ${note.is_checklist ? 'auto' : '80px'};" onblur="saveNote(${note.id}, null, this.value)">${note.content}</textarea>
+            </div>
+        `).join('');
     }
 
-    renderMiniCalendar(today);
+    window.toggleNoteFeature = async (id, action) => {
+        const formData = new FormData();
+        formData.append('action', action);
+        formData.append('id', id);
+        await fetch('notes_api.php', { method: 'POST', body: formData });
+        loadNotes();
+    };
 
-    // --- AJAX Logic ---
+    window.shareNote = async (id) => {
+        const formData = new FormData();
+        formData.append('action', 'share');
+        formData.append('id', id);
+        const res = await fetch('notes_api.php', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.status === 'success') {
+            prompt("Collab Key Generated! Share this with your teammate:", data.collab_key);
+        }
+    };
 
-    // 1. Add Task AJAX
-    const taskForm = document.getElementById('task-form');
-    if (taskForm) {
-        taskForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(taskForm);
-            formData.append('add_task', '1');
-            formData.append('ajax', '1');
+    window.saveNote = async (id, title, content) => {
+        const formData = new FormData();
+        formData.append('action', 'save');
+        if (id) formData.append('id', id);
+        if (title !== null) formData.append('title', title);
+        if (content !== null) formData.append('content', content);
+        await fetch('notes_api.php', { method: 'POST', body: formData });
+    };
 
-            try {
-                const response = await fetch('task.php', {
-                    method: 'POST',
-                    body: formData,
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                });
-                const result = await response.json();
+    window.deleteNote = async (id) => {
+        if (!confirm("Delete note?")) return;
+        const formData = new FormData();
+        formData.append('action', 'delete');
+        formData.append('id', id);
+        await fetch('notes_api.php', { method: 'POST', body: formData });
+        loadNotes();
+    };
 
-                if (result.status === 'success') {
-                    window.notifier.success('Success', result.message);
-                    // Close modal and reload content or inject HTML
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('taskModal'));
-                    modal.hide();
-                    setTimeout(() => window.location.reload(), 1000); // Reload for now to keep it simple, but with a nice notification first
-                } else {
-                    window.notifier.error('Error', result.message);
-                }
-            } catch (error) {
-                window.notifier.error('Network Error', 'Could not reach the server.');
-            }
-        });
-    }
+    loadNotes();
 
-    // 2. Toggle Task AJAX
-    document.querySelectorAll('form button[name="toggle_task"]').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            const form = btn.closest('form');
-            const formData = new FormData(form);
-            formData.append('toggle_task', '1');
-            formData.append('ajax', '1');
-
-            const taskCard = btn.closest('.task-card');
-
-            try {
-                const response = await fetch('task.php', {
-                    method: 'POST',
-                    body: formData,
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                });
-                const result = await response.json();
-
-                if (result.status === 'success') {
-                    window.notifier.success('Updated', result.message);
-                    // Update UI
-                    if (result.data.status === 'completed') {
-                        taskCard.classList.add('completed');
-                        btn.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
-                        taskCard.querySelector('.badge').className = 'badge bg-success-subtle text-success rounded-pill px-3 py-2 fs-8 fw-bold border border-success border-opacity-20';
-                        taskCard.querySelector('.badge').textContent = 'COMPLETED';
-                    } else {
-                        taskCard.classList.remove('completed');
-                        btn.innerHTML = '<i class="bi bi-circle"></i>';
-                        taskCard.querySelector('.badge').className = 'badge bg-primary-subtle text-primary rounded-pill px-3 py-2 fs-8 fw-bold border border-primary border-opacity-20';
-                        taskCard.querySelector('.badge').textContent = 'PENDING';
-                    }
-                } else {
-                    window.notifier.error('Error', result.message);
-                }
-            } catch (error) {
-                window.notifier.error('Network Error', 'Could not reach the server.');
-            }
-        });
-    });
-
-    // 3. Delete Task AJAX
-    document.querySelectorAll('form button[name="delete_task"]').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            if (!confirm('Are you sure you want to delete this task?')) return;
-
-            const form = btn.closest('form');
-            const formData = new FormData(form);
-            formData.append('delete_task', '1');
-            formData.append('ajax', '1');
-
-            const taskCard = btn.closest('.task-card');
-
-            try {
-                const response = await fetch('task.php', {
-                    method: 'POST',
-                    body: formData,
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                });
-                const result = await response.json();
-
-                if (result.status === 'success') {
-                    window.notifier.success('Deleted', result.message);
-                    taskCard.style.transition = 'all 0.4s ease';
-                    taskCard.style.opacity = '0';
-                    taskCard.style.transform = 'translateX(20px)';
-                    setTimeout(() => taskCard.remove(), 400);
-                } else {
-                    window.notifier.error('Error', result.message);
-                }
-            } catch (error) {
-                window.notifier.error('Network Error', 'Could not reach the server.');
-            }
-        });
-    });
+    // 5. System Health & Sync (already exists)
 });
+
+// Global Task Functions
+window.openTaskModal = function(date = null) {
+    const modal = new bootstrap.Modal(document.getElementById('taskModal'));
+    const dateInput = document.querySelector('input[name="due_date"]');
+    if (date && dateInput) dateInput.value = date;
+    modal.show();
+};
+
+window.toggleTaskStatus = async function(id, current) {
+    const formData = new FormData();
+    formData.append('toggle_task', '1');
+    formData.append('task_id', id);
+    formData.append('current_status', current);
+    const res = await fetch('task.php', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.status === 'success') location.reload();
+};
+
+window.deleteTask = async function(id) {
+    if (!confirm('Are you sure you want to delete this task?')) return;
+    const formData = new FormData();
+    formData.append('delete_task', '1');
+    formData.append('task_id', id);
+    const res = await fetch('task.php', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.status === 'success') location.reload();
+};

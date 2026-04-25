@@ -178,7 +178,7 @@ if (isset($_POST['register'])) {
                                             <i class="bi bi-eye"></i>
                                         </button>
                                     </div>
-                                    <div id="pw-error" class="text-danger fs-8 mt-2 hidden">Passwords do not match</div>
+                                    <div id="pw-error" class="text-danger fs-8 mt-2 d-none">Passwords do not match</div>
                                 </div>
                             </div>
 

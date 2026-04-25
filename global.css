@@ -28,6 +28,19 @@
     --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+[data-theme="dark"] {
+    --bg-darker: #020617;
+    --bg-dark: #0f172a;
+    --surface: rgba(15, 23, 42, 0.8);
+    --border: rgba(255, 255, 255, 0.05);
+    --text-primary: #f1f5f9;
+    --text-muted: #94a3b8;
+    --text-dim: #64748b;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -142,6 +155,7 @@ body {
 .fs-8 { font-size: 0.75rem; }
 .fs-9 { font-size: 0.65rem; }
 .hide-scroll::-webkit-scrollbar { display: none; }
+.fw-black { font-weight: 900; }
 .reveal-animation { animation: revealIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
 @keyframes revealIn { from { opacity: 0; transform: translateY(20px); filter: blur(5px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
 
@@ -282,4 +296,50 @@ body {
 .btn-password-toggle:hover {
     color: var(--primary);
     transform: translateY(-50%) scale(1.1);
+}
+
+/* Fixed Calendar Grid Layout */
+.calendar-full.view-month, .calendar-full.view-week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1rem;
+    min-width: 800px;
+}
+
+.calendar-grid-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1rem;
+    min-width: 800px;
+}
+
+.day-box {
+    aspect-ratio: 1/1 !important;
+    min-height: 120px;
+    border-radius: 1.5rem;
+    padding: 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.day-box:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+}
+
+.day-box.empty {
+    visibility: visible;
+    background: rgba(0,0,0,0.02);
+    border-style: dashed;
+}
+
+[data-theme='dark'] .day-num {
+    color: #f8fafc !important;
+    font-weight: 800;
 }

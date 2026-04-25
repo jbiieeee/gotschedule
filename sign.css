@@ -36,9 +36,9 @@
 }
 
 .form-control {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    color: white !important;
+    background: #ffffff !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text-primary) !important;
     padding: 1rem 1.25rem !important;
     border-radius: 1rem !important;
     transition: var(--transition);

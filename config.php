@@ -17,4 +17,24 @@ if (!$conn) {
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+/**
+ * Log a user action to the audit_logs table
+ */
+function logActivity($conn, $user_id, $action, $details = null) {
+    $stmt = $conn->prepare("INSERT INTO audit_logs (user_id, action, details) VALUES (?, ?, ?)");
+    $stmt->bind_param("iss", $user_id, $action, $details);
+    $stmt->execute();
+    $stmt->close();
+}
+
+/**
+ * Strict authentication check
+ */
+function checkAuth() {
+    if (!isset($_SESSION['user_id'])) {
+        header("Location: main.php");
+        exit();
+    }
+}
 ?>

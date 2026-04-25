@@ -184,3 +184,29 @@
 @media (max-width: 991px) {
     .main-content { margin-left: 0; width: 100%; padding: 2rem 1.5rem; padding-top: 5rem; }
 }
+
+/* Habit Tracker Grid Styling */
+.habit-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 8px;
+}
+.habit-day {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    background: rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: var(--transition);
+}
+.habit-day.completed {
+    background: #10b981;
+    border-color: #10b981;
+    box-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
+}
+.habit-day:hover { transform: scale(1.2); }
+
+/* Brain Dump Overlay Text */
+#brain-dump-area::placeholder { color: #d97706; opacity: 0.4; font-style: italic; }

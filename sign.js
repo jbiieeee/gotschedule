@@ -11,10 +11,10 @@ document.addEventListener("DOMContentLoaded", function() {
         [password, confirmPassword].forEach(input => {
             input.addEventListener('input', () => {
                 if (password.value === confirmPassword.value) {
-                    pwError.classList.add('hidden');
+                    pwError.classList.add('d-none');
                     confirmPassword.classList.remove('is-invalid');
                 } else if (confirmPassword.value !== '') {
-                    pwError.classList.remove('hidden');
+                    pwError.classList.remove('d-none');
                 }
             });
         });
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function() {
             
             // Re-check passwords
             if (password.value !== confirmPassword.value) {
-                pwError.classList.remove('hidden');
+                pwError.classList.remove('d-none');
                 confirmPassword.classList.add('is-invalid');
                 window.notifier.error('Mismatch', 'Passwords do not match.');
                 return;

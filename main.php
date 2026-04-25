@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
                     </div>
                     <div class="col-lg-6 reveal-animation" style="animation-delay: 0.2s;">
                         <div class="hero-image-wrapper p-2 bg-white rounded-5 shadow-2xl border border-dark border-opacity-10">
-                            <img src="dashboard-preview.png" alt="GotSchedule Dashboard Mockup" class="img-fluid rounded-4 shadow-sm w-100 transition-all hover-scale">
+                            <img src="hero_dashboard.png" alt="GotSchedule Dashboard Preview" class="img-fluid rounded-4 shadow-sm w-100 transition-all hover-scale">
                         </div>
                     </div>
                 </div>
