@@ -1,6 +1,5 @@
--- Database: sign_up
-CREATE DATABASE IF NOT EXISTS sign_up;
-USE sign_up;
+-- GotSchedule Live Database Schema
+-- Fixed for InfinityFree (No CREATE DATABASE command)
 
 -- Table structure for table `users`
 CREATE TABLE IF NOT EXISTS `users` (
@@ -46,13 +45,13 @@ CREATE TABLE IF NOT EXISTS `notes` (
   `title` varchar(255) NOT NULL,
   `content` text NOT NULL,
   `color_tag` varchar(20) DEFAULT '#6366f1',
+  `is_pinned` tinyint(1) DEFAULT 0,
+  `is_checklist` tinyint(1) DEFAULT 0,
+  `collab_key` varchar(50) DEFAULT NULL,
   `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- Table structure for table `messages`
-... (rest of the tables)
 
 -- Table structure for table `messages`
 CREATE TABLE IF NOT EXISTS `messages` (
@@ -67,14 +66,43 @@ CREATE TABLE IF NOT EXISTS `messages` (
   FOREIGN KEY (`receiver_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Table structure for table `notifications`
-CREATE TABLE IF NOT EXISTS `notifications` (
+-- Table structure for table `audit_logs`
+CREATE TABLE IF NOT EXISTS `audit_logs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
-  `type` varchar(50) NOT NULL,
-  `message` varchar(255) NOT NULL,
-  `is_read` tinyint(1) DEFAULT 0,
+  `action` varchar(100) NOT NULL,
+  `details` text DEFAULT NULL,
   `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table structure for table `habits`
+CREATE TABLE IF NOT EXISTS `habits` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `habit_name` varchar(255) NOT NULL,
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table structure for table `habit_history`
+CREATE TABLE IF NOT EXISTS `habit_history` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `habit_id` int(11) NOT NULL,
+  `date` date NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`habit_id`) REFERENCES `habits`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table structure for table `brain_dump`
+CREATE TABLE IF NOT EXISTS `brain_dump` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `content` text DEFAULT NULL,
+  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`),
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
