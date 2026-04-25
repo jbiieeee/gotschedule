@@ -42,3 +42,66 @@ document.addEventListener("DOMContentLoaded", function() {
 function confirmLogout() {
     return confirm("Are you sure you want to log out?");
 }
+
+// Login AJAX Handling
+document.addEventListener("DOMContentLoaded", function() {
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = loginForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            
+            // Loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Signing in...';
+            
+            const formData = new FormData(loginForm);
+            formData.append('login', '1');
+            formData.append('ajax', '1');
+
+            try {
+                const response = await fetch('main.php', {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    window.notifier.success('Access Granted', result.message);
+                    setTimeout(() => {
+                        window.location.href = result.redirect;
+                    }, 1200);
+                } else {
+                    window.notifier.error('Login Failed', result.message);
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                }
+            } catch (error) {
+                window.notifier.error('Network Error', 'Something went wrong. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
+        });
+    }
+
+    // Password Visibility Toggle
+    document.querySelectorAll('.btn-password-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            const icon = btn.querySelector('i');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('bi-eye', 'bi-eye-slash');
+                window.notifier.info('Peak Mode', 'Be careful of who is watching!');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('bi-eye-slash', 'bi-eye');
+            }
+        });
+    });
+});

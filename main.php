@@ -1,7 +1,9 @@
 <?php
 require_once 'config.php';
 
-// Handle login logic (kept for quick entry)
+$is_ajax = isset($_POST['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest');
+
+// Handle login logic
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     $email = mysqli_real_escape_string($conn, $_POST['login-email']);
     $password = $_POST['login-password'];
@@ -11,20 +13,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     $stmt->execute();
     $result = $stmt->get_result();
 
+    $error = '';
     if ($user = $result->fetch_assoc()) {
         if (password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['first_name'] . ' ' . $user['last_name'];
             $_SESSION['role'] = $user['role'];
             $_SESSION['avatar'] = $user['avatar_url'];
+            
+            if ($is_ajax) {
+                header('Content-Type: application/json');
+                echo json_encode(['status' => 'success', 'message' => 'Welcome back, ' . $user['first_name'] . '!', 'redirect' => 'task.php']);
+                exit();
+            }
             header("Location: task.php");
             exit();
         } else {
-            $loginError = "Incorrect password. Please try again.";
+            $error = "Incorrect password. Please try again.";
         }
     } else {
-        $loginError = "No account found with that email.";
+        $error = "No account found with that email.";
     }
+    
+    if ($is_ajax) {
+        header('Content-Type: application/json');
+        echo json_encode(['status' => 'error', 'message' => $error]);
+        exit();
+    }
+    $loginError = $error;
     $stmt->close();
 }
 ?>
@@ -142,7 +158,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
                                         <label class="form-label text-dark mb-0">Password</label>
                                         <a href="#" class="fs-8 text-primary text-decoration-none fw-bold">Forgot?</a>
                                     </div>
-                                    <input type="password" class="form-control" name="login-password" placeholder="••••••••" required>
+                                    <div class="position-relative">
+                                        <input type="password" id="login-password" class="form-control pe-5" name="login-password" placeholder="••••••••" required>
+                                        <button type="button" class="btn-password-toggle" data-target="login-password">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 
                                 <?php if (isset($loginError)): ?>
@@ -197,6 +218,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="notifications.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>
 

@@ -3,12 +3,30 @@ require_once 'config.php';
 
 // Authentication check
 if (!isset($_SESSION['user_id'])) {
+    if (isset($_POST['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest')) {
+        header('Content-Type: application/json');
+        echo json_encode(['status' => 'error', 'message' => 'Unauthorized access']);
+        exit();
+    }
     header("Location: main.php");
     exit();
 }
 
 $user_id = $_SESSION['user_id'];
 $user_name = $_SESSION['user_name'];
+$is_ajax = isset($_POST['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest');
+
+function sendResponse($status, $message, $data = []) {
+    global $is_ajax;
+    if ($is_ajax) {
+        header('Content-Type: application/json');
+        echo json_encode(['status' => $status, 'message' => $message, 'data' => $data]);
+        exit();
+    } else {
+        // For non-AJAX, we'll just continue to fetch tasks and render
+        return;
+    }
+}
 
 // Handle task operations
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -19,22 +37,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $stmt = $conn->prepare("INSERT INTO tasks (user_id, task_name, due_date, task_time) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("isss", $user_id, $task_name, $due_date, $task_time);
-        $stmt->execute();
-        $stmt->close();
+        
+        if ($stmt->execute()) {
+            $task_id = $stmt->insert_id;
+            $stmt->close();
+            sendResponse('success', 'Task added successfully!', ['id' => $task_id]);
+        } else {
+            sendResponse('error', 'Failed to add task');
+        }
     } elseif (isset($_POST['toggle_task'])) {
         $task_id = $_POST['task_id'];
         $new_status = $_POST['current_status'] === 'pending' ? 'completed' : 'pending';
         
         $stmt = $conn->prepare("UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?");
         $stmt->bind_param("sii", $new_status, $task_id, $user_id);
-        $stmt->execute();
-        $stmt->close();
+        
+        if ($stmt->execute()) {
+            $stmt->close();
+            sendResponse('success', 'Task updated!', ['status' => $new_status]);
+        } else {
+            sendResponse('error', 'Failed to update task');
+        }
     } elseif (isset($_POST['delete_task'])) {
         $task_id = $_POST['task_id'];
         $stmt = $conn->prepare("DELETE FROM tasks WHERE id = ? AND user_id = ?");
         $stmt->bind_param("ii", $task_id, $user_id);
-        $stmt->execute();
-        $stmt->close();
+        
+        if ($stmt->execute()) {
+            $stmt->close();
+            sendResponse('success', 'Task deleted!');
+        } else {
+            sendResponse('error', 'Failed to delete task');
+        }
     }
 }
 
@@ -55,6 +89,7 @@ $tasks = mysqli_query($conn, "SELECT * FROM tasks WHERE user_id = $user_id ORDER
     <link rel="stylesheet" href="task.css">
 </head>
 <body class="dashboard-body">
+    <script src="notifications.js"></script>
 
     <!-- Sidebar -->
     <?php include 'sidebar.php'; ?>

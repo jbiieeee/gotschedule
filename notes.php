@@ -32,6 +32,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     <link rel="stylesheet" href="task.css">
 </head>
 <body class="dashboard-body">
+    <script src="notifications.js"></script>
 
     <!-- Sidebar -->
     <?php include 'sidebar.php'; ?>
@@ -181,5 +182,6 @@ while ($row = mysqli_fetch_assoc($result)) {
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="notes.js"></script>
 </body>
 </html>

@@ -1,31 +1,31 @@
 /* Global Design System - Light Dynamic Edition */
 :root {
-    /* Primary Style Tokens */
-    --primary: #4f46e5;
-    --primary-dark: #3730a3;
-    --secondary: #059669;
-    --accent: #e11d48;
+    /* Primary Style Tokens - Vibrant & Modern */
+    --primary: #6366f1;
+    --primary-dark: #4338ca;
+    --secondary: #10b981;
+    --accent: #f43f5e;
     
     /* Backgrounds - Refined Light Glass */
-    --bg-darker: #f8fafc;
-    --bg-dark: #f1f5f9;
-    --surface: rgba(255, 255, 255, 0.95);
-    --border: rgba(30, 41, 59, 0.12);
+    --bg-darker: #fcfdfe;
+    --bg-dark: #f8fafc;
+    --surface: rgba(255, 255, 255, 0.75);
+    --border: rgba(99, 102, 241, 0.08);
     
-    /* Elevation Tokens */
-    --glass-blur: blur(12px); /* Performance optimized from 20px */
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    --border-radius-lg: 1rem;
-    --border-radius-xl: 1.5rem;
+    /* Elevation Tokens - Deep & Soft */
+    --glass-blur: blur(16px);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 10px 25px -5px rgba(99, 102, 241, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 20px 40px -10px rgba(99, 102, 241, 0.12), 0 12px 20px -8px rgba(0, 0, 0, 0.06);
+    --border-radius-lg: 1.25rem;
+    --border-radius-xl: 2rem;
     
-    /* Typography */
-    --text-primary: #0f172a;
-    --text-muted: #475569;
-    --text-dim: #64748b;
+    /* Typography - Premium Stack */
+    --text-primary: #1e293b;
+    --text-muted: #64748b;
+    --text-dim: #94a3b8;
     --font-main: 'Inter', system-ui, -apple-system, sans-serif;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {
@@ -142,5 +142,144 @@ body {
 .fs-8 { font-size: 0.75rem; }
 .fs-9 { font-size: 0.65rem; }
 .hide-scroll::-webkit-scrollbar { display: none; }
-.reveal-animation { animation: revealIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-@keyframes revealIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.reveal-animation { animation: revealIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+@keyframes revealIn { from { opacity: 0; transform: translateY(20px); filter: blur(5px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+
+/* Premium Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.2); border-radius: 10px; transition: var(--transition); }
+::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.4); }
+
+/* Unified Hover State for All Glass Panels */
+.glass-panel:hover {
+    transform: translateY(-4px);
+    border-color: rgba(99, 102, 241, 0.2);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Toast Notifications - State of the Art Glassmorphism */
+.notification-container {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    pointer-events: none;
+}
+
+.toast-modern {
+    pointer-events: auto;
+    width: 320px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.15);
+    border-radius: 1.25rem;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    animation: toastSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+@keyframes toastSlideIn {
+    0% { transform: translateX(120%) scale(0.9); opacity: 0; }
+    100% { transform: translateX(0) scale(1); opacity: 1; }
+}
+
+@keyframes toastSlideOut {
+    0% { transform: translateX(0) scale(1); opacity: 1; }
+    100% { transform: translateX(120%) scale(0.9); opacity: 0; }
+}
+
+.toast-modern.hide {
+    animation: toastSlideOut 0.4s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+}
+
+.toast-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.toast-success .toast-icon { background: rgba(16, 185, 129, 0.15); color: #059669; }
+.toast-error .toast-icon { background: rgba(239, 68, 68, 0.15); color: #dc2626; }
+.toast-info .toast-icon { background: rgba(59, 130, 246, 0.15); color: #2563eb; }
+
+.toast-content { flex-grow: 1; }
+
+.toast-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    margin-bottom: 0.15rem;
+}
+
+.toast-message {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.toast-close {
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    padding: 0.25rem;
+    border-radius: 0.5rem;
+    transition: var(--transition);
+}
+
+.toast-close:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--text-primary);
+}
+
+.toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: var(--primary);
+    width: 100%;
+    transform-origin: left;
+}
+
+.toast-success .toast-progress { background: #10b981; }
+.toast-error .toast-progress { background: #ef4444; }
+.toast-info .toast-progress { background: #3b82f6; }
+
+/* Password Toggle Button */
+.btn-password-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    z-index: 10;
+}
+
+.btn-password-toggle:hover {
+    color: var(--primary);
+    transform: translateY(-50%) scale(1.1);
+}

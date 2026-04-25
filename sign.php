@@ -3,6 +3,7 @@ require_once 'config.php';
 
 $message = '';
 $messageType = '';
+$is_ajax = isset($_POST['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest');
 
 if (isset($_POST['register'])) {
     // Sanitize inputs
@@ -15,10 +16,11 @@ if (isset($_POST['register'])) {
     $password = $_POST['password'];
     $confirmPassword = $_POST['confirm-password'];
 
+    $error = '';
+    
     // Validation
     if ($password !== $confirmPassword) {
-        $message = "Passwords do not match.";
-        $messageType = "danger";
+        $error = "Passwords do not match.";
     } else {
         // Check if email already exists
         $checkEmail = $conn->prepare("SELECT id FROM users WHERE email = ?");
@@ -27,23 +29,37 @@ if (isset($_POST['register'])) {
         $checkEmail->store_result();
         
         if ($checkEmail->num_rows > 0) {
-            $message = "An account with this email already exists.";
-            $messageType = "warning";
+            $error = "An account with this email already exists.";
         } else {
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
             $stmt = $conn->prepare("INSERT INTO users (first_name, middle_name, last_name, contact_number, country, email, password) VALUES (?, ?, ?, ?, ?, ?, ?)");
             $stmt->bind_param("sssssss", $firstName, $middleName, $lastName, $contactNumber, $country, $email, $hashedPassword);
 
             if ($stmt->execute()) {
+                if ($is_ajax) {
+                    header('Content-Type: application/json');
+                    echo json_encode(['status' => 'success', 'message' => 'Registration successful! Redirecting to login...', 'redirect' => 'main.php']);
+                    exit();
+                }
                 $message = "Registration successful! You can now <a href='main.php' class='alert-link'>log in</a>.";
                 $messageType = "success";
             } else {
-                $message = "Database error: " . $stmt->error;
-                $messageType = "danger";
+                $error = "Database error: " . $stmt->error;
             }
             $stmt->close();
         }
         $checkEmail->close();
+    }
+
+    if ($error && $is_ajax) {
+        header('Content-Type: application/json');
+        echo json_encode(['status' => 'error', 'message' => $error]);
+        exit();
+    }
+    
+    if ($error) {
+        $message = $error;
+        $messageType = "danger";
     }
 }
 ?>
@@ -145,13 +161,23 @@ if (isset($_POST['register'])) {
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Password</label>
-                                    <input type="password" id="password" class="form-control" name="password" placeholder="••••••••" required minlength="8">
+                                    <div class="position-relative">
+                                        <input type="password" id="password" class="form-control pe-5" name="password" placeholder="••••••••" required minlength="8">
+                                        <button type="button" class="btn-password-toggle" data-target="password">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Confirm Password</label>
-                                    <input type="password" id="confirm-password" class="form-control" name="confirm-password" placeholder="••••••••" required>
+                                    <div class="position-relative">
+                                        <input type="password" id="confirm-password" class="form-control pe-5" name="confirm-password" placeholder="••••••••" required>
+                                        <button type="button" class="btn-password-toggle" data-target="confirm-password">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
                                     <div id="pw-error" class="text-danger fs-8 mt-2 hidden">Passwords do not match</div>
                                 </div>
                             </div>
@@ -190,6 +216,7 @@ if (isset($_POST['register'])) {
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="notifications.js"></script>
     <script src="sign.js"></script>
 </body>
 </html>
