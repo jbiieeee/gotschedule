@@ -3,7 +3,7 @@
 **Master Your Moment. Conquer Your Day.**
 
 GotSchedule is a professional-grade, multi-dimensional productivity platform built to transform academic and professional chaos into streamlined action plans.
-
+-https://gotschedule.ct.ws/
 ---
 
 ## 🛠️ Technical Stack (The Engine)
