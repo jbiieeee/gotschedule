@@ -1,9 +1,19 @@
 <?php
 // Database configuration
-define('DB_SERVER', 'localhost');
-define('DB_USERNAME', 'root');
-define('DB_PASSWORD', '');
-define('DB_NAME', 'sign_up');
+// Environment Detection & Database configuration
+if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1' || $_SERVER['REMOTE_ADDR'] == '::1') {
+    // LOCALHOST (XAMPP)
+    define('DB_SERVER', 'localhost');
+    define('DB_USERNAME', 'root');
+    define('DB_PASSWORD', '');
+    define('DB_NAME', 'sign_up');
+} else {
+    // LIVE SERVER (InfinityFree)
+    define('DB_SERVER', 'sql312.infinityfree.com');
+    define('DB_USERNAME', 'if0_41749779');
+    define('DB_PASSWORD', 'N1T4Ujr9Ahh');
+    define('DB_NAME', 'if0_41749779_gotschedule');
+}
 
 // Attempt to connect to MySQL database
 $conn = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
